@@ -8,6 +8,8 @@
     <color name="pink">#EA5863</color>
     <color name="red">#ff3131</color>
     <color name="blue">#38b6ff</color>
+    <color name="colorCorrect">#38b6ff</color>
+    <color name="colorIncorrect">#FFFFFFFF</color>
 
 
 </resources>

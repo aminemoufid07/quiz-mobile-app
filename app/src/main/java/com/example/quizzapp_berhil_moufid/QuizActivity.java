@@ -1,154 +1,166 @@
 package com.example.quizzapp_berhil_moufid;
-
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 public class QuizActivity extends AppCompatActivity {
 
-    private ImageView mQuizImage;
-    private String mAnswer;
-    private int mScore = 0;
-    private int mQuizNum = 1;
-    private int QuestionNum = 0;
-    private TextView mQuizNumView;
-    private TextView mQuestionView;
     private Questions mQuestions = new Questions();
+    private int mCorrectAnswers = 0;
+    private int mQuestionNumber = 0;
+    private TextView mQuizNumTextView;
+    private TextView mQuestionTextView;
+    private ImageView mQuizImageView;
+    private EditText mInputEditText;
+    private Button mSubmitButton;
+    private String mCurrentFullLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        mQuestionView = findViewById(R.id.question_textview);
-        mQuizNumView = findViewById(R.id.quiznum_textView);
+        mQuestionTextView = findViewById(R.id.question_textview);
+        mQuizImageView = findViewById(R.id.quiz_image);
+        mInputEditText = findViewById(R.id.inputEditText);
+        mSubmitButton = findViewById(R.id.button_submit);
+        mQuizNumTextView = findViewById(R.id.quiznum_textView);
 
-        updateQuestions();
+        updateQuestion();
 
-        Button submit = findViewById(R.id.button_submit);
-
-        submit.setOnClickListener(new View.OnClickListener() {
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if(mQuestions.getType(QuestionNum) == "radiobutton"){
-
-                    if(mQuestions.getCorrectAnswers(QuestionNum).equals(mAnswer)){
-
-                        mScore++ ;
-                        displayToastCorrectAnswer();
-                    }else {
-                        displayToastWrongAnswer();
-                    }
-                }
-                SystemClock.sleep(1000);
-
-                if(QuestionNum == mQuestions.getLength() -1){
-                    //Result Activity
-
-                    QuestionNum = 0;
-                    mQuizNum = 0;
-                    mScore = 0;
-
-                }else {
-                    QuestionNum++ ;
-                    mQuizNum++ ;
-                }
-
-                updateQuestions();
-
+            public void onClick(View v) {
+                checkAnswer();
             }
         });
-
     }
 
-    private void displayToastCorrectAnswer(){
-        Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
+    private void updateQuestionNumberText() {
+        int totalQuestions = mQuestions.getLength();
+        int currentQuestionNumber = mQuestionNumber + 1;
+        mQuizNumTextView.setText(getString(R.string.quiz_number_format, currentQuestionNumber, totalQuestions));
     }
 
-    private void displayToastWrongAnswer(){
-        Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
+    private void updateQuestion() {
+        mQuestionTextView.setText(mQuestions.getQuestion(mQuestionNumber));
+        mQuizImageView.setImageResource(getResources().getIdentifier(
+                mQuestions.getImage(mQuestionNumber), "drawable", getPackageName()));
+        updateQuestionNumberText();
     }
 
-    private void updateQuestions(){
+    private void checkAnswer() {
+        String userAnswer = mInputEditText.getText().toString().trim();
+        String correctAnswer = mQuestions.getCorrectAnswer(mQuestionNumber);
 
-        LinearLayout answer_layout = findViewById(R.id.answers_layout);
-        answer_layout.removeAllViews();
-        mAnswer="";
+        if (userAnswer.equalsIgnoreCase(correctAnswer)) {
+            showToastWithAnimation("Correct!");
+            mCorrectAnswers++;
 
-        mQuizNumView.setText(mQuizNum + "/" + String.valueOf(mQuestions.getLength()));
-        mQuestionView.setText(mQuestions.getQuestions(QuestionNum));
-        if(mQuestions.getType(QuestionNum) == "radiobutton"){
-
-            showRadioButtonAnswers(QuestionNum);
+            // Set the full logo with animation
+            setFullLogoWithAnimation();
+        } else {
+            showToast("Incorrect! La bonne réponse est : " + correctAnswer);
         }
 
-        showMainImage();
-
-        ScrollView sv = findViewById(R.id.scrollView);
-        sv.smoothScrollTo(0, 0);
-
-    }
-
-    private void showMainImage(){
-
-        mQuizImage = findViewById(R.id.quiz_image);
-
-        String img = mQuestions.getImages(QuestionNum);
-
-        mQuizImage.setImageResource(getResources().getIdentifier(img, "drawable", getPackageName()));
-
-    }
-
-    private void showRadioButtonAnswers(int qnum){
-
-        final LinearLayout answerLayout = findViewById(R.id.answers_layout);
-        RadioGroup rg = new RadioGroup(this);
-        rg.setOrientation(RadioGroup.VERTICAL);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-
-        rg.setLayoutParams(lp);
-        rg.setPadding(90,0,0,0);
-
-        final RadioButton[] rb1 = new RadioButton[3];
-
-        for(int i =0; i<=2; i++){
-            rb1[i] = new RadioButton(this);
-            rb1[i].setText(mQuestions.getChoice(qnum) [i]);
-            rb1[i].setTextColor(Color.BLACK);
-            rb1[i].setPadding(8,16,8,16);
-            rb1[i].setTextSize(26);
-            rb1[i].setId(i);
-            rb1[i].setWidth(600);
-
-            rg.addView(rb1[i]);
-
+        if (mQuestionNumber + 1 < mQuestions.getLength()) {
+            mQuestionNumber++;
+            updateQuestion();
+        } else {
+            showToast("Quiz terminé!");
+            Intent resultIntent = new Intent(QuizActivity.this, ResultActivity.class);
+            resultIntent.putExtra("correctAnswers", mCorrectAnswers);
+            resultIntent.putExtra("totalQuestions", mQuestions.getLength());
+            startActivity(resultIntent);
+            finish();
         }
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int Id) {
 
-                mAnswer = mQuestions.getChoice(QuestionNum)[Id];
+        mInputEditText.getText().clear();
+    }
+    private void setFullLogoWithAnimation() {
+        // Load animation
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.correct_animation);
 
-            }
-        });
-        answerLayout.addView(rg);
+        // Stocke le nom du logo complet dans la variable mCurrentFullLogo
+        mCurrentFullLogo = mQuestions.getImageFull(mQuestionNumber);
+
+        // Set the full logo with animation
+        mQuizImageView.setImageResource(getResources().getIdentifier(
+                mCurrentFullLogo, "drawable", getPackageName()));
+        mQuizImageView.startAnimation(animation);
+
+        // Afficher un toast personnalisé avec le logo complet
+        showToastWithFullLogo("Correct!");
     }
 
+
+    private void showToastWithFullLogo(String message) {
+        // Load animation
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.correct_animation);
+
+        // Create a custom toast with animation
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        ImageView logoImageView = layout.findViewById(R.id.logo_image);
+        logoImageView.setImageResource(getResources().getIdentifier(
+                mQuestions.getImageFull(mQuestionNumber), "drawable", getPackageName()));
+        logoImageView.startAnimation(animation);
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showToastWithAnimation(String message) {
+        // Load animation
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.correct_animation);
+
+        // Create a custom toast with animation
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
 
 }
-
 

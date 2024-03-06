@@ -3,96 +3,73 @@ package com.example.quizzapp_berhil_moufid;
 public class Questions {
 
     private String mQuestions[] = {
-            "Can you guess this logo ?",
-            "What about this logo ?",
-            "Okay, and this logo ?",
-            "Guess this logo ?",
-            "Can you guess this logo ?",
-            "Now try to guess this logo ?",
-            "And this logo ?",
-            "Can you guess this logo ?",
-            "Guess the logo ?",
-            "Can you guess this logo ?"
+            "Pouvez-vous deviner ce logo ?",
+            "Et celui-ci ?",
+            "OK, et ce logo ?",
+            "Devinez ce logo ?",
+            "Pouvez-vous deviner ce logo ?",
+            "Essayez maintenant de deviner ce logo ?",
+            "Et ce logo ?",
+            "Pouvez-vous deviner ce logo ?",
+            "Devinez le logo ?",
+            "Pouvez-vous deviner ce logo ?"
     };
 
-    private String mChoice[] [] = {
-            {"AmaZone","Amazonia","Amazon"},
-            {"Ferretti","Ferris","Ferrari"},
-            {"Google","Gogol","Goggle"},
-            {"MacDinner","McDonald's","MacDonny's"},
-            {"Nake","Nick","Nike"},
-            {"Pinning","Pinterest","Pintastic"},
-            {"PlayStation","PlayBox","PlayNation"},
-            {"StarCup","Starbucks","Star Beans"},
-            {"Shell","SeaShell","ShellOil"},
-            {"Telsa","Tesler","Tesla"}
+    private String mImagesUnfull[] = {
+            "lays",
+            "burgerking",
+            "cisco",
+            "hp",
+            "levis",
+            "nestle",
+            "northface",
+            "intel",
+            "ups",
+            "ferrari"
     };
-
-    private String mImages[] = {
-            "amzn",
-            "ferr",
-            "g",
-            "mcdon",
-            "nik",
-            "pin",
-            "play",
-            "sb",
-            "shell",
-            "tes"
-    };
-
-    private String mQuestionsType[] = {
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton",
-            "radiobutton"
+    private String mImagesFull[] = {
+            "laysfull",
+            "burgerkingfull",
+            "ciscofull",
+            "hpfull",
+            "levisfull",
+            "nestlefull",
+            "northfacefull",
+            "intelfull",
+            "upsfull",
+            "ferrarifull"
     };
 
     private String mCorrectAnswers[] = {
-            "Amazon",
-            "Ferrari",
-            "Google",
-            "McDonald's",
-            "Nike",
-            "Pinterest",
-            "PlayStation",
-            "StarBucks",
-            "Shell",
-            "Tesla"
+            "lays",
+            "burgerking",
+            "cisco",
+            "hp",
+            "levis",
+            "nestle",
+            "thenorthface",
+            "intel",
+            "ups",
+            "ferrari",
+
     };
 
-    public String getQuestions(int q){
-        String questions = mQuestions[q];
-        return questions;
+    public String getQuestion(int q) {
+        return mQuestions[q];
     }
 
-    public String[] getChoice(int q) {
-        String [] choice = mChoice[q];
-        return choice;
+    public String getImage(int q) {
+        return mImagesUnfull[q];
     }
 
-    public String getImages(int q) {
-        String img = mImages[q];
-        return img;
-    }
-
-    public String getType(int q) {
-        String type = mQuestionsType[q];
-        return type;
-    }
-
-    public int getLength(){
+    public int getLength() {
         return mQuestions.length;
     }
+    public String getImageFull(int q) {
+        return mImagesFull[q];
+    }
 
-    public String getCorrectAnswers(int q) {
-        String correct = mCorrectAnswers[q];
-        return correct;
+    public String getCorrectAnswer(int q) {
+        return mCorrectAnswers[q];
     }
 }
