@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -66,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
 
             // Redirigez l'utilisateur vers la page principale
-            Intent intent = new Intent(this, QuizActivity.class);
-            startActivity(intent);
+            Intent loadingAnimation = new Intent(this, LoadingLoginActivity.class);
+            startActivity(loadingAnimation);
             finish();  // Fermez cette activité pour éviter de revenir en arrière
         } else {
             // Affichez un message Toast en cas d'échec d'authentification

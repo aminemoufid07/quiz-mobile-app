@@ -1,7 +1,7 @@
 package com.example.quizzapp_berhil_moufid;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +9,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -90,14 +81,30 @@ public class QuizActivity extends AppCompatActivity {
             updateQuestion();
         } else {
             showToast("Quiz terminé!");
-            Intent resultIntent = new Intent(QuizActivity.this, ResultActivity.class);
-            resultIntent.putExtra("correctAnswers", mCorrectAnswers);
-            resultIntent.putExtra("totalQuestions", mQuestions.getLength());
-            startActivity(resultIntent);
-            finish();
+
+            // Start Loading activity after a delay of 3 seconds
+            Handler handler = new Handler();
+            handler.postDelayed(() -> redirectToLoadingAnimation(), 3000); // 3000 milliseconds (3 seconds)
         }
 
         mInputEditText.getText().clear();
+    }
+
+    private void redirectToLoadingAnimation() {
+        Intent fetchingResultsIntent = new Intent(QuizActivity.this, LoadingResultActivity.class);
+        startActivity(fetchingResultsIntent);
+
+        // Start ResultActivity after a delay of 3 seconds in Loading animation
+        Handler handler = new Handler();
+        handler.postDelayed(() -> redirectToResultActivity(), 3000); // 3000 milliseconds (3 seconds)
+    }
+
+    private void redirectToResultActivity() {
+        Intent resultIntent = new Intent(QuizActivity.this, ResultActivity.class);
+        resultIntent.putExtra("correctAnswers", mCorrectAnswers);
+        resultIntent.putExtra("totalQuestions", mQuestions.getLength());
+        startActivity(resultIntent);
+        finish(); // Fermez cette activité si nécessaire
     }
     private void setFullLogoWithAnimation() {
         // Load animation
@@ -161,6 +168,7 @@ public class QuizActivity extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
     }
+
 
 }
 

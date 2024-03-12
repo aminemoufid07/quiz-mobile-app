@@ -3,34 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ResultActivity">
+    tools:context=".ResultActivity"
+    android:backgroundTint="@color/white">
+
+    <ImageView
+        android:id="@+id/result_image"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/qmark"
+        />
 
     <TextView
         android:id="@+id/result_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Résultats: "
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+
+        android:layout_above="@id/result_image"
+
         android:textSize="20sp" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_below="@id/result_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:max="100"
-        android:progress="0" />
-
-    <Button
-        android:id="@+id/btn_click"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/progress_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Continuer"
-        android:onClick="onContinueButtonClick" />
 </RelativeLayout>
